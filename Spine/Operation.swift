@@ -260,7 +260,7 @@ class SaveOperation: ConcurrentOperation {
 		} else {
 			url = router.urlForQuery(Query(resource: resource))
 			method = "PATCH"
-			options = [.IncludeID]
+			options = serializer.patchSerializationOptions.union(.IncludeID)
 		}
 		
 		let payload: Data
@@ -317,7 +317,14 @@ class SaveOperation: ConcurrentOperation {
 	}
 
 	fileprivate func updateRelationships() {
+        let options = serializer.patchSerializationOptions
 		let relationships = resource.fields.filter { field in
+            if field is ToOneRelationship, options.contains(.IncludeToOne) {
+                return false
+            }
+            if field is ToManyRelationship, options.contains(.IncludeToMany) {
+                return false
+            }
 			return field is Relationship && !field.isReadOnly
 		}
 		

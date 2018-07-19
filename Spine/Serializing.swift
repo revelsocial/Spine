@@ -18,8 +18,11 @@ public class Serializer {
 	
 	/// The key formatter used for formatting field names to keys.
 	public var keyFormatter: KeyFormatter = AsIsKeyFormatter()
-	
-	public init() {}
+
+    /// Serializer options for `PATCH` requests
+    public var patchSerializationOptions: SerializationOptions = []
+
+    public init() {}
 
 	/// Deserializes the given data into a JSONAPIDocument.
 	///
